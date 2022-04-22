@@ -1,0 +1,181 @@
+#include <iostream>
+#include <cstring>
+
+struct comp
+{
+	int index;
+	int value;
+	comp* next;
+};
+
+struct dyn_list
+{
+	comp* beg;
+	comp* end;
+};
+
+void createList(dyn_list& refer)
+{
+	refer.beg = NULL;
+}
+
+bool checkVoidList(dyn_list& refer)
+{
+	return(refer.beg == NULL);
+}
+
+void addListEl(dyn_list& refer, int in, int va)
+{
+	comp* c = new comp;
+	c->index = in;
+	c->value = va;
+	c->next = NULL;
+	if (checkVoidList(refer))
+		refer.beg = c;
+	else
+		refer.end->next = c;
+	refer.end = c;
+}
+
+comp* searchByVal(dyn_list l, int va)
+{
+	while (l.beg != NULL)
+	{
+		if (l.beg->value == va)
+		{
+			return l.beg;
+		}
+		l.beg = l.beg->next;
+	}
+	return l.beg;
+}
+
+comp* searchByIndex(dyn_list l, int in)
+{
+	while (l.beg != NULL)
+	{
+		if (l.beg->index == in)
+			return l.beg;
+		l.beg = l.beg->next;
+	}
+	return l.beg;
+}
+
+void deleteEl(dyn_list& l, comp* refer)
+{
+	if (refer == l.beg)
+	{
+		l.beg = refer->next;
+		return;
+	}
+	comp* r = new comp;
+	r = l.beg;
+	while (r->next != refer)
+	{
+		r = r->next;
+	}
+	r->next = refer->next;
+	delete refer;
+}
+
+void changeValue(comp& refer, int changer)
+{
+	refer.value = changer;
+}
+
+void showEl(dyn_list sh)
+{
+	int counter = 1;
+	while (sh.beg != NULL)
+	{
+		std::cout << "Element number " << counter << ". Index - " << sh.beg->index <<
+			"\nValue - " << sh.beg->value << '\n' << '\n';
+		counter++;
+		sh.beg = sh.beg->next;
+	}
+}
+
+int main()
+{
+	dyn_list bigboy;
+	createList(bigboy);
+	char answer;
+	do
+	{
+		do {
+			system("cls");
+			std::cout << "Do you want to add element?(Y/N) - ";
+			std::cin >> answer;
+			if (answer == 'Y')
+			{
+				int value;
+				int index;
+				std::cout << "Index? - ";
+				std::cin >> index;
+				std::cout << "Value? - ";
+				std::cin >> value;
+				addListEl(bigboy, index, value);
+				system("cls");
+			}
+			else if (answer == 'N')
+			{
+				system("cls");
+				if (bigboy.beg == NULL)
+				{
+					std::cout << "You haven't any elements now\n";
+					answer = 'l';
+					continue;
+				}
+			}
+			else
+			{
+				system("cls");
+				std::cout << "You've entered the wrong number. ";
+				continue;
+			}
+		} while (answer != 'N');
+
+		do {
+			system("cls");
+			std::cout << "Do you want to delete element?(Y/N) - ";
+			std::cin >> answer;
+			if (answer == 'Y')
+			{
+				std::cout << "Delete by index or value?(I/V) - ";
+				std::cin >> answer;
+				if (answer == 'I')
+				{
+					int index2;
+					std::cout << "Index? - ";
+					std::cin >> index2;
+					deleteEl(bigboy, searchByIndex(bigboy, index2));
+				}
+				else if (answer == 'V')
+				{
+					int value2;
+					std::cout << "Value? - ";
+					std::cin >> value2;
+					deleteEl(bigboy, searchByVal(bigboy, value2));
+				}
+				system("cls");
+				showEl(bigboy);
+			}
+			else if (answer == 'N')
+			{
+				system("cls");
+				showEl(bigboy);
+			}
+		} while (answer != 'N');
+
+		std::cout << "Quit?(Y/N) - ";
+		std::cin >> answer;
+		while (answer != 'Y' and answer != 'N')
+		{
+			std::cout << "You've entered the wrong number, please try again";
+			std::cout << "Quit?(Y/N) - ";
+			std::cin >> answer;
+		}
+	} while (answer != 'Y');
+
+	return 0;
+}
